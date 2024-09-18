@@ -47,7 +47,8 @@ Before using the scripts, ensure the following packages are installed on your sy
 
    ```bash
    git clone https://github.com/Anshul-007/HyprLock_installer
-   cd HyprLock_installer/Hyprlock-Styles
+   cp -r HyprLock_installer/Hyprlock-Styles/ ~/.config/Hyprlock-Styles
+   cd ~/.config/Hyprlock-Styles
     ```
 2. **Choose your installer:**
     - Basic Installer: `basic_installer.sh`
