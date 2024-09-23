@@ -38,7 +38,7 @@ select_style() {
 
     # Calculate dynamic size (e.g., 40x20 for small terminals and up to 100x30 for larger ones)
     if [[ $terminal_width -ge 100 && $terminal_height -ge 30 ]]; then
-        img_width=100
+        img_width=90
         img_height=30
     else
         img_width=$((terminal_width / 2))
@@ -46,14 +46,14 @@ select_style() {
     fi
 
     # Add the "Remove Style" option at the end of the styles list
-    styles_with_remove=("${styles[@]}" "❌Remove Style")
+    styles_with_remove=("${styles[@]}" "❌ Remove Style")
 
     # Show menu with fzf for style selection or remove style
     style=$(printf "%s\n" "${styles_with_remove[@]}" | fzf --prompt="Select a Hyprlock style (Q + Enter to quit): " \
         --preview='
         style=$(echo {})
-        if [[ "$style" == "❌Remove Style" ]]; then
-            echo "Select this option to remove the currently applied style."
+        if [[ "$style" == "❌ Remove Style" ]]; then
+            echo "Removal of styles permanently"
         else
             preview_path="'$BASE_DIR'/$style/preview.png"
             if [[ -f "$preview_path" ]]; then
@@ -71,11 +71,16 @@ select_style() {
     fi
 
     # Continue with the rest of the script only if a valid option was selected
-    if [[ "$style" == "❌Remove Style" ]]; then
-        echo "Type $USER to confirm choice: "
-        read 
-        remove_style
-        exit 0
+    if [[ "$style" == "❌ Remove Style" ]]; then
+        echo "⚠️ Warning: This will permanently remove any selected style Proceed(Y/n): "
+            read confirmation
+        if [[ "$confirmation" == "Y" || "$confirmation" == "y" ]]; then
+            remove_style
+            exit 0
+        else
+            echo "Removal cancelled."
+            exit 0
+        fi
     fi
 
 
@@ -111,7 +116,7 @@ remove_style() {
     styles=($(ls -d "$BASE_DIR"/*/ | xargs -n 1 basename))
 
     # Use fzf to select a style to remove
-    style_to_remove=$(printf "%s\n" "${styles[@]}" | fzf --prompt="Select a style to remove: ")
+    style_to_remove=$(printf "%s\n" "${styles[@]}" | fzf --prompt="Select a style to remove (Ctrl+C to quit): ")
 
     if [[ -n "$style_to_remove" ]]; then
         echo "You selected: $style_to_remove for removal."
