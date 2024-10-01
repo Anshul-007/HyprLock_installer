@@ -6,6 +6,12 @@ BASE_DIR="$HOME/.config/Hyprlock-Styles"
 # Define the target directory for Hypr configuration
 TARGET_DIR="$HOME/.config/hypr"
 
+# Ensure the ~/.cache/hyde directory exists
+cache_wallpaper_dir="$HOME/.cache/hyde"
+if [[ ! -d "$cache_wallpaper_dir" ]]; then
+    mkdir -p "$cache_wallpaper_dir"
+fi
+
 # List all styles (directories) under the base directory
 styles=($(ls -d "$BASE_DIR"/*/ | xargs -n 1 basename))
 
@@ -25,7 +31,6 @@ select_style() {
 
     # Read the previously applied style
     LAST_STYLE_FILE="$TARGET_DIR/last_applied_style.txt"
-    # Check if last_applied_style.txt exists
     if [[ -f "$LAST_STYLE_FILE" ]]; then
         last_style=$(cat "$LAST_STYLE_FILE")
     else
@@ -36,7 +41,7 @@ select_style() {
     terminal_width=$(tput cols)
     terminal_height=$(tput lines)
 
-    # Calculate dynamic size (e.g., 40x20 for small terminals and up to 100x30 for larger ones)
+    # Calculate dynamic size (e.g., 40x20 for small terminals and up to 90x30 for larger ones)
     if [[ $terminal_width -ge 100 && $terminal_height -ge 30 ]]; then
         img_width=90
         img_height=30
@@ -72,8 +77,8 @@ select_style() {
 
     # Continue with the rest of the script only if a valid option was selected
     if [[ "$style" == "❌ Remove Style" ]]; then
-        echo "⚠️ Warning: This will permanently remove any selected style Proceed(Y/n): "
-            read confirmation
+        echo "⚠️ Warning: This will permanently remove any selected style. Proceed(Y/n): "
+        read confirmation
         if [[ "$confirmation" == "Y" || "$confirmation" == "y" ]]; then
             remove_style
             exit 0
@@ -82,7 +87,6 @@ select_style() {
             exit 0
         fi
     fi
-
 
     # If a previous style exists, clean up the old style's files before applying the new one
     if [[ -n "$last_style" && -d "$BASE_DIR/$last_style" ]]; then
@@ -122,7 +126,7 @@ remove_style() {
         echo "You selected: $style_to_remove for removal."
 
         # Ask user to type their username ($USER) for confirmation
-        read -p "Type your username ($USER) to confirm deletion of $style_to_remove(This action is irreversible): " confirmation
+        read -p "Type your username ($USER) to confirm deletion of $style_to_remove (This action is irreversible): " confirmation
 
         if [[ "$confirmation" == "$USER" ]]; then
             # Check if the directory exists
@@ -142,13 +146,42 @@ remove_style() {
     fi
 }
 
-# Function to copy files and install fonts
 apply_style() {
     local style_dir="$BASE_DIR/$style"
+
+    # Check if hyprlock.conf exists in the selected style
+    if [[ ! -f "$style_dir/hyprlock.conf" ]]; then
+        echo "Error: hyprlock.conf not found in the selected style. Style will not be applied."
+        exit 1
+    fi
+
+    # Check if any .png or .jpg file exists in the style directory
+    img_found=false
+    for img_file in "$style_dir"/*.{png,jpg,jpeg}; do
+        if [[ -f "$img_file" ]]; then
+            img_found=true
+            break
+        fi
+    done
 
     # Copy all contents from the selected style to the target directory
     echo "Copying $style files..."
     cp -r "$style_dir/"* "$TARGET_DIR/"
+
+    if [[ "$img_found" == false ]]; then
+        # No image found, use the default wallpaper from .cache
+        echo "No .png or .jpg file found in the style. Using wallpaper from .cache."
+        # cp "$cache_wallpaper_dir/wall.set" "$cache_wallpaper_dir/hyprlock.png"
+
+        # Ensure the wallpaper remains in png extension for hyprlock support
+        # magick "$cache_wallpaper_dir/hyprlock.png" "$cache_wallpaper_dir/hyprlock.png"
+
+    else
+        echo "Applying style's own image from the style folder."
+    fi
+
+    # Ensure that hyprlock.conf refers to the wallpaper in .cache/hyde
+    # sed -i 's|wallpaper=.*|wallpaper="'$cache_wallpaper_dir/hyprlock.png'"|' "$TARGET_DIR/hyprlock.conf"
 
     # Save the current style to the last_applied_style.txt
     echo "$style" > "$TARGET_DIR/last_applied_style.txt"
@@ -165,7 +198,7 @@ apply_style() {
             fi
         done
         echo "Updating font cache..."
-        fc-cache -f 
+        fc-cache -f
     else
         echo "No font directory found in $style_dir."
     fi
