@@ -6,11 +6,10 @@
 This repository provides multiple Hyprlock styles and includes three versions of an installation script:
 
 1. **Basic Installer**
-2. **Installer without Preview**
-3. **Installer with Preview**
-4. ** **Beta Installer with Preview**
+2. **Installer with Preview**
+3. **Advanced Installer**
 
-** Installer requires additional feature and may not work on all system
+`Note`: Dynamic wallpaper only works on Hyde project
 
 These scripts allow you to apply different styles to your Hyprlock configuration with options to preview styles before applying them.
 
@@ -46,12 +45,12 @@ Before using the scripts, ensure the following packages are installed on your sy
    - Install via: `sudo pacman -S kitty` or `sudo apt install kitty`
 
 7. Optional: **Imagemagick** (for converting image formats)
-    - Install via: 'sudo pacman -S imagemagick` or 'sudo apt install imagemagick`
+    - Install via: `sudo pacman -S imagemagick` or `sudo apt install imagemagick`
 
-6. **Optional feature** (for enabling current wallpaper on hyprlock)
+6. **Optional feature** (for enabling dynamic wallpaper on hyprlock)
     - This installer works best on Hyde project 
     - Check the Hyde project [here](https://github.com/HyDE-Project/Hyde-cli?tab=readme-ov-file#installation)
-    - If you have a directory where all the dynamic wallpapers are kept in a `png` format you can specify the path in the `hyprlock.conf` file of `Style_wallpaper` directory
+    - OR If you have a directory where all the dynamic wallpapers are kept in a `png` only format you can specify the path in the `hyprlock.conf` file of `Style-wallpaper` directory
 ## Installation
 
 1. **Clone the repository** to your local machine:
@@ -63,9 +62,8 @@ Before using the scripts, ensure the following packages are installed on your sy
     ```
 2. **Choose your installer:**
     - Basic Installer: `basic_installer.sh`
-    - Installer without preview: `installer_without_preview.sh`
     - Installer with preview: `installer_with_preview.sh` **(Recommended)**
-    - Optional Installer with preview and delete feature: `beta_installer_with_preview.sh`
+    - Installer with delete feature: `advanced_installer.sh`
 
     Make the desired script executable:
 
@@ -89,21 +87,11 @@ Before using the scripts, ensure the following packages are installed on your sy
 ## Usage 
 
 ### Basic Installer
-Run the basic installer script: 
+This script will apply the selected style to your Hyrplock configuration. It doesn't offer preview functionality:
 
 ```bash
 ./basic_installer.sh
 ```
-
-This script will apply the selected style to your Hyrplock configuration. It doesn't offer preview functionality
-
-### Installer without Preview
-This script works similarly to the basic installer but skips the preview of styles:
-
-```bash
-./installer_without_preview.sh
-```
-It also applies the selected style but without previewing any images of the styles in the terminal.
 
 ### Installer with Preview
 This version allows you to see a preview of the styles before applying them:
@@ -112,14 +100,16 @@ This version allows you to see a preview of the styles before applying them:
 ./installer_with_preview.sh
 ```
 
-### Beta installer with removal and dynamic wallpaper
-This version allows you to see a preview of the styles and delete a style permanently:
+### Advanced Installer with removal and dynamic wallpaper
+This version allows you to preview and delete a style permanently:
 
 ```bash
-./beta_installer_with_preview.sh
+./advanced_installer.sh
 ```
 
-You will be prompted to select a style using `fzf`. If you have the preview feature enabled, `chafa` will display the style preview in your terminal and this works best on kitty terminal.
+You will be prompted to select a style using `fzf`. If you have the preview feature enabled, `chafa` will display the style preview in your terminal and this works best on `kitty` terminal.
+
+`Update: All installers are packaged with cache functionality`
 
 **WARNING**: If you have your `hyprlock.conf` file in `~/.config/hypr` directory please back it up as this script may delete if ran more than one time.
 
@@ -141,22 +131,21 @@ Feel free to to contribute to this repository by submitting issues or pull reque
 2. The structure of Style-`N` directory should be of this structure:
     ```
     .config/Hyprlock-Styles/Style-N
-    ├── Fonts
-    │   ├── JetBrains
-    │   │   └── JetBrains Mono Nerd.ttf
-    │   └── SF Pro Display
-    │       ├── SF Pro Display Bold.otf
-    │       └── SF Pro Display Regular.otf
     ├── hyprlock.conf
     ├── hyprlock.png
     ├── preview.png
     ├── Scripts
     │   └── songdetail.sh
     └── user.jfif
+
+    .config/Hyprlock-Styles/FONT_DIR
+    └── A_Font_directory_without_spaced
+        └──font.ttf
     ```
 
 ## Credits
-This project is possible by all the open source projects and big thanks to [Mr. Vivek Rajan](https://github.com/MrVivekRajan/Hyprlock-Styles) for all the styles
+- This project is possible by all the open source projects and big thanks to [Mr. Vivek Rajan](https://github.com/MrVivekRajan/Hyprlock-Styles) for all the styles. 
+- Also check out [Khurasan](https://fontesk.com/designer/syaf-rizal/) for awesome fonts.
 
 ## License
 This project is licensed under the [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html), since some of the style are derived from other GPL-licensed repositories.
