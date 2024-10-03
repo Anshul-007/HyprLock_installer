@@ -30,7 +30,7 @@ if [[ -n "$current_player" ]]; then
     if [[ ${#song_info} -gt $max_length ]]; then
         song_info="${song_info:0:$max_length}..."
     fi
-    echo "> $icon $song_info"
+    echo "$icon $song_info"
 else
-    echo "> ... 💤 Cricket 🦗 noises 💤 ..."  # No active player
+    echo "... 💤 Cricket 🦗 noises 💤 ..."  # No active player
 fi

@@ -8,6 +8,9 @@ This repository provides multiple Hyprlock styles and includes three versions of
 1. **Basic Installer**
 2. **Installer without Preview**
 3. **Installer with Preview**
+4. ** **Beta Installer with Preview**
+
+** Installer requires additional feature and may not work on all system
 
 These scripts allow you to apply different styles to your Hyprlock configuration with options to preview styles before applying them.
 
@@ -19,6 +22,7 @@ These scripts allow you to apply different styles to your Hyprlock configuration
   - [Installer without Preview](#installer-without-preview)
   - [Installer with Preview](#installer-with-preview)
 - [Contributing](#contributing)
+- [Credits](#credits)
 - [License](#license)
 
 ## Requirements
@@ -41,6 +45,13 @@ Before using the scripts, ensure the following packages are installed on your sy
 5. **Kitty Terminal** (for certain preview features)
    - Install via: `sudo pacman -S kitty` or `sudo apt install kitty`
 
+7. Optional: **Imagemagick** (for converting image formats)
+    - Install via: 'sudo pacman -S imagemagick` or 'sudo apt install imagemagick`
+
+6. **Optional feature** (for enabling current wallpaper on hyprlock)
+    - This installer works best on Hyde project 
+    - Check the Hyde project [here](https://github.com/HyDE-Project/Hyde-cli?tab=readme-ov-file#installation)
+    - If you have a directory where all the dynamic wallpapers are kept in a `png` format you can specify the path in the `hyprlock.conf` file of `Style_wallpaper` directory
 ## Installation
 
 1. **Clone the repository** to your local machine:
@@ -53,13 +64,28 @@ Before using the scripts, ensure the following packages are installed on your sy
 2. **Choose your installer:**
     - Basic Installer: `basic_installer.sh`
     - Installer without preview: `installer_without_preview.sh`
-    - Installer with preview: `installer_with_preview.sh`
+    - Installer with preview: `installer_with_preview.sh` **(Recommended)**
+    - Optional Installer with preview and delete feature: `beta_installer_with_preview.sh`
 
     Make the desired script executable:
 
     ```bash
     chmod +x installer_with_preview.sh # Replace with your chosen script
     ```
+    
+3. **Optional feature for dynamic wallpaper**
+    - For those who are on Hyde project can `add` below in ~/.local/share/bin/swwwallpaper.sh -> Wall_Cache()
+    ```bash
+    if [[ "${wallList[setIndex]}" == *.gif ]]; then
+        echo "GIFs are not supported by hyprlock yet..."
+    else
+        # Convert current wallpaper to PNG and store in .cache/hyde as wall.png
+        magick convert "${wallList[setIndex]}" "${cacheDir}/wall.png"
+    fi
+    ```
+    - For those who are not on Hyde project need to make a directory where all wallpapers are dynamically changed and stored and then link that path to hyprlock.conf file in Style_wallpaper folder
+
+        **Note: Use png format if possible or convert your images to png using imagemagick since hyprlock.conf can't be updated dynamically
 ## Usage 
 
 ### Basic Installer
@@ -86,7 +112,14 @@ This version allows you to see a preview of the styles before applying them:
 ./installer_with_preview.sh
 ```
 
-You will be prompted to select a style using `fzf`. If you have the preview feature enabled, `chafa` will display the style preview in your terminal.
+### Beta installer with removal and dynamic wallpaper
+This version allows you to see a preview of the styles and delete a style permanently:
+
+```bash
+./beta_installer_with_preview.sh
+```
+
+You will be prompted to select a style using `fzf`. If you have the preview feature enabled, `chafa` will display the style preview in your terminal and this works best on kitty terminal.
 
 **WARNING**: If you have your `hyprlock.conf` file in `~/.config/hypr` directory please back it up as this script may delete if ran more than one time.
 
@@ -121,6 +154,9 @@ Feel free to to contribute to this repository by submitting issues or pull reque
     │   └── songdetail.sh
     └── user.jfif
     ```
+
+## Credits
+This project is possible by all the open source projects and big thanks to [Mr. Vivek Rajan](https://github.com/MrVivekRajan/Hyprlock-Styles) for all the styles
 
 ## License
 This project is licensed under the [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html), since some of the style are derived from other GPL-licensed repositories.

@@ -6,21 +6,24 @@ BASE_DIR="$HOME/.config/Hyprlock-Styles"
 # Define the target directory for Hypr configuration
 TARGET_DIR="$HOME/.config/hypr"
 
+# Define the Font collection directory and the record fonts installed
+SUPER_FONT_DIR="$BASE_DIR/FONT_DIR"
+INSTALLED_FONTS_FILE="$SUPER_FONT_DIR/installed_fonts.txt"
+# Define the rsync exclusion file
+EXCLUDE_FILE="/tmp/exclude_files.txt"
 # List all styles (directories) under the base directory
-styles=($(ls -d "$BASE_DIR"/*/ | xargs -n 1 basename))
-
+styles=($(ls -d $BASE_DIR/Style-* | xargs -n 1 basename))
+# Define files to exclude from deletion
+EXCLUDE_FILES=(
+    "animations.conf"
+    "hyprland.conf"
+    "keybindings.conf"
+    "monitors.conf"
+    "nvidia.conf"
+    "userprefs.conf"
+    "windowrules.conf"
+)
 select_style() {
-
-    # Define files to exclude from deletion
-    EXCLUDE_FILES=(
-        "animations.conf"
-        "hyprland.conf"
-        "keybindings.conf"
-        "monitors.conf"
-        "nvidia.conf"
-        "userprefs.conf"
-        "windowrules.conf"
-    )
 
     # Read the previously applied style
     LAST_STYLE_FILE="$TARGET_DIR/last_applied_style.txt"
@@ -40,9 +43,9 @@ select_style() {
     # echo "DEBUG: width : $terminal_width"
     # echo "DEBUG: width : $terminal_height"
 
-    # Calculate dynamic size (e.g., 40x20 for small terminals and up to 100x30 for larger ones)
+    # Calculate dynamic size (e.g., 40x20 for small terminals and up to 90x30 for larger ones)
     if [[ $terminal_width -ge 100 && $terminal_height -ge 30 ]]; then
-        img_width=100
+        img_width=90
         img_height=30
     else
         img_width=$((terminal_width / 2))
@@ -60,9 +63,9 @@ select_style() {
         #echo "DEBUG: Preview path: $preview_path"
         # Check if the preview file exists
         if [[ -f "$preview_path" ]]; then
-            chafa --size='"$img_width"x"$img_height"' "$preview_path"  # Adjust the size to fit the preview window
+            chafa --size='"$img_width"x"$img_height"' "$preview_path" 
         else
-            echo "No preview available for this style."
+            chafa --size='"$img_width"x"$img_height"' "'$BASE_DIR'/helloaesthe.jpg" 
         fi'
         )
 
@@ -100,39 +103,107 @@ select_style() {
     fi
 }
 
+# Function to update fonts only if necessary
+update_fonts() {
+    # Get the list of font subfolders in the super font directory, preserving spaces
+    mapfile -t current_folders < <(find "$SUPER_FONT_DIR" -mindepth 1 -maxdepth 1 -type d | sed 's|.*/||' | sed 's|/$||')
+
+    # Check for folders containing spaces and give a warning
+    for folder in "${current_folders[@]}"; do
+        if [[ "$folder" =~ [[:space:]] ]]; then
+            echo "Warning: Folder '$folder' contains spaces. Please rename the folder to avoid issues."
+        fi
+    done
+
+    # Create associative arrays for installed and current fonts
+    declare -A installed_map
+    declare -A current_map
+
+    # Read the list of installed fonts (subfolder names) from the record file
+    if [[ -f "$INSTALLED_FONTS_FILE" ]]; then
+        while read -r folder; do
+            installed_map["$folder"]=1
+        done < "$INSTALLED_FONTS_FILE"
+    fi
+
+    # Populate current_map for faster lookup
+    for folder in "${current_folders[@]}"; do
+        current_map["$folder"]=1
+    done
+
+    # If installed_fonts.txt is empty, copy all subfolders to the font directory
+    if [[ ${#installed_map[@]} -eq 0 ]]; then
+        echo "No fonts installed. Installing all fonts from $SUPER_FONT_DIR..."
+        
+        # Copy all fonts from the subfolders to the local font directory
+        for folder in "${!current_map[@]}"; do
+            cp -r "$SUPER_FONT_DIR/$folder/" "$HOME/.local/share/fonts/"
+        done
+
+        # Update the installed_fonts.txt with subfolder names
+        printf "%s\n" "${!current_map[@]}" > "$INSTALLED_FONTS_FILE"
+
+        # Update the font cache
+        echo "Updating font cache..."
+        fc-cache -f
+        echo "All fonts installed."
+    else
+        # Find new folders that need to be installed in one pass
+        new_folders=()
+        for folder in "${!current_map[@]}"; do
+            if [[ -z "${installed_map[$folder]}" ]]; then
+                new_folders+=("$folder")
+            fi
+        done
+
+        # Install new fonts from folders that haven't been installed
+        if [[ ${#new_folders[@]} -gt 0 ]]; then
+            echo "Installing new fonts from folders: ${new_folders[*]}"
+            
+            for folder in "${new_folders[@]}"; do
+                cp -r "$SUPER_FONT_DIR/$folder/" "$HOME/.local/share/fonts/"
+            done
+
+            # Update the installed_fonts.txt with current folder names
+            printf "%s\n" "${!current_map[@]}" > "$INSTALLED_FONTS_FILE"
+
+            # Update the font cache
+            echo "Updating font cache..."
+            fc-cache -f
+            echo "New fonts installed."
+        else
+            echo "No new fonts to install."
+        fi
+    fi
+}
+
 # Function to copy files and install fonts
 apply_style() {
     local style_dir="$BASE_DIR/$style"
 
-    # Copy all contents from the selected style to the target directory
-    echo "Copying $style files..."
-    cp -r "$style_dir/"* "$TARGET_DIR/"
+
+    # Check if hyprlock.conf exists in the selected style
+    if [[ ! -f "$style_dir/hyprlock.conf" ]]; then
+        echo "Error: hyprlock.conf not found in the selected style. Style will not be applied."
+        exit 1
+    fi
+
+    # Write the excluded files to the exclusion file
+    for exclude in "${EXCLUDE_FILES[@]}"; do
+        echo "$exclude" >> "$EXCLUDE_FILE"
+    done
+    # Sync the selected style to the config directory, excluding files from the list
+    echo "Applying $(basename "$style_dir")..."
+
+    rsync -a --exclude-from="$EXCLUDE_FILE" "$style_dir/" "$TARGET_DIR/"
+
+    # Clean up the temporary exclude file
+    rm "$EXCLUDE_FILE"
 
     # Save the current style to the last_applied_style.txt
     echo "$style" > "$TARGET_DIR/last_applied_style.txt"
 
-    echo "Installing required fonts..."
-    local font_dir="$style_dir/Fonts"
-
-    if [[ -d "$font_dir" ]]; then
-        # echo "DEBUG: Installing fonts from $font_dir..."
-        for font in "$font_dir"/*; do
-            if [[ -d "$font" ]]; then
-                # Copy only directories (fonts)
-                cp -r "$font" "$HOME/.local/share/fonts/"
-            elif [[ -f "$font" ]]; then
-                # Copy individual font files
-                cp "$font" "$HOME/.local/share/fonts/"
-            fi
-        done
-        echo "Updating font cache..."
-        fc-cache -f 
-    else
-        echo "No font directory found in $style_dir."
-    fi
-
-    echo "Updating Hyprlock configuration..."
-    
+    update_fonts
 }
 
 # Main script execution
