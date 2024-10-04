@@ -26,7 +26,7 @@ fi
 # Display song details with icon only if a player is active
 if [[ -n "$current_player" ]]; then
     song_info=$(playerctl -p "$current_player" metadata --format '{{title}} - {{artist}}' 2>/dev/null)
-    max_length=50
+    max_length=30
     if [[ ${#song_info} -gt $max_length ]]; then
         song_info="${song_info:0:$max_length}..."
     fi
