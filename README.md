@@ -1,3 +1,16 @@
+
+<div align="center">
+    <!-- GitHub Stars -->
+    <a href="https://github.com/Anshul-007/HyprLock_installer">
+        <img src="https://img.shields.io/github/stars/Anshul-007/Hyprlock_installer?style=for-the-badge&label=Star&logo=github" alt="Star this repo" width="150"/>
+    </a>
+</div>
+<div align="center">
+    <a href="https://www.youtube.com/@anxuljyoti">
+        <img src="https://img.shields.io/badge/Subscribe-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Subscribe to my YouTube channel" width="200"/>
+    </a>
+</div>
+
 # Hyprlock Styles Installer
 
 [![Hyprlock Styles Demo](https://img.youtube.com/vi/4Qes9o3ifHQ/0.jpg)](https://www.youtube.com/watch?v=4Qes9o3ifHQ)
@@ -149,3 +162,11 @@ Feel free to to contribute to this repository by submitting issues or pull reque
 
 ## License
 This project is licensed under the [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html), since some of the style are derived from other GPL-licensed repositories.
+
+## Support My Work
+
+<div align="center">
+  <a href="https://ko-fi.com/anshulj">
+    <img src="https://img.shields.io/badge/Buy%20Me%20a%20Thermal%20Paste-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Buy me a thermal paste" width="250"/>
+  </a>
+</div>
