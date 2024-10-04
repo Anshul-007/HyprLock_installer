@@ -13,7 +13,7 @@
 
 # Hyprlock Styles Installer
 
-[![Hyprlock Styles Demo](https://img.youtube.com/vi/4Qes9o3ifHQ/0.jpg)](https://www.youtube.com/watch?v=4Qes9o3ifHQ)
+[![Hyprlock Styles Demo](https://img.youtube.com/vi/uGAp4B-8Kr4/0.jpg)](https://www.youtube.com/watch?v=uGAp4B-8Kr4)
 
 
 This repository provides multiple Hyprlock styles and includes three versions of an installation script:
@@ -22,7 +22,7 @@ This repository provides multiple Hyprlock styles and includes three versions of
 2. **Installer with Preview**
 3. **Advanced Installer**
 
-`Note`: Dynamic wallpaper only works on Hyde project
+`Note`: Dynamic wallpaper style works best on Hyde project
 
 These scripts allow you to apply different styles to your Hyprlock configuration with options to preview styles before applying them.
 
@@ -62,8 +62,8 @@ Before using the scripts, ensure the following packages are installed on your sy
 
 6. **Optional feature** (for enabling dynamic wallpaper on hyprlock)
     - This installer works best on Hyde project 
-    - Check the Hyde project [here](https://github.com/HyDE-Project/Hyde-cli?tab=readme-ov-file#installation)
-    - OR If you have a directory where all the dynamic wallpapers are kept in a `png` only format you can specify the path in the `hyprlock.conf` file of `Style-wallpaper` directory
+    - Check the Hyde project [here](https://github.com/HyDE-Project/Hyde-cli?)
+    - `OR` If you have a directory where all the dynamic wallpapers are kept in a `png` only format you can specify the path in the `hyprlock.conf` file of `Style-wallpaper` directory
 ## Installation
 
 1. **Clone the repository** to your local machine:
@@ -94,9 +94,9 @@ Before using the scripts, ensure the following packages are installed on your sy
         magick convert "${wallList[setIndex]}" "${cacheDir}/wall.png"
     fi
     ```
-    - For those who are not on Hyde project need to make a directory where all wallpapers are dynamically changed and stored and then link that path to hyprlock.conf file in Style_wallpaper folder
+    - For those who are not on Hyde project need to make a directory where all wallpapers are dynamically changed and stored and then link that path to hyprlock.conf file in Style-wallpaper folder
 
-        **Note: Use png format if possible or convert your images to png using imagemagick since hyprlock.conf can't be updated dynamically
+        `Note`: Use png format if possible or convert your images to png using imagemagick since hyprlock.conf {`wall.png`} can't be updated dynamically
 ## Usage 
 
 ### Basic Installer
@@ -120,7 +120,7 @@ This version allows you to preview and delete a style permanently:
 ./advanced_installer.sh
 ```
 
-You will be prompted to select a style using `fzf`. If you have the preview feature enabled, `chafa` will display the style preview in your terminal and this works best on `kitty` terminal.
+You will be prompted to select a style using `fzf`. If you are using the preview script, `chafa` will display the style preview in your terminal and this works best on `kitty` terminal.
 
 `Update: All installers are packaged with cache functionality`
 
@@ -167,6 +167,6 @@ This project is licensed under the [GPL-3.0 License](https://www.gnu.org/license
 
 <div align="center">
   <a href="https://ko-fi.com/anshulj">
-    <img src="https://img.shields.io/badge/Buy%20Me%20a%20Thermal%20Paste-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Buy me a thermal paste" width="250"/>
+    <img src="https://img.shields.io/badge/Help%20Me%20Buy%20%20a%20Thermal%20Paste-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Help me buy a thermal paste" width="250"/>
   </a>
 </div>
