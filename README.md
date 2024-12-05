@@ -31,8 +31,8 @@ These scripts allow you to apply different styles to your Hyprlock configuration
 - [Installation](#installation)
 - [Usage](#usage)
   - [Basic Installer](#basic-installer)
-  - [Installer without Preview](#installer-without-preview)
   - [Installer with Preview](#installer-with-preview)
+  - [Advanced Installer](#Advanced-Installer-with-removal-and-dynamic-wallpaper)
 - [Contributing](#contributing)
 - [Credits](#credits)
 - [License](#license)
@@ -76,7 +76,7 @@ Before using the scripts, ensure the following packages are installed on your sy
 2. **Choose your installer:**
     - Basic Installer: `basic_installer.sh`
     - Installer with preview: `installer_with_preview.sh` **(Recommended)**
-    - Installer with delete feature: `advanced_installer.sh`
+    - Installer with delete feature: `advanced_installer.sh` **(To Delete Style Collection)**
 
     Make the desired script executable:
 
@@ -85,18 +85,9 @@ Before using the scripts, ensure the following packages are installed on your sy
     ```
     
 3. **Optional feature for dynamic wallpaper**
-    - For those who are on Hyde project can `add` below in ~/.local/share/bin/swwwallpaper.sh -> Wall_Cache()
-    ```bash
-    if [[ "${wallList[setIndex]}" == *.gif ]]; then
-        echo "GIFs are not supported by hyprlock yet..."
-    else
-        # Convert current wallpaper to PNG and store in .cache/hyde as wall.png
-        magick convert "${wallList[setIndex]}" "${cacheDir}/wall.png"
-    fi
-    ```
-    - For those who are not on Hyde project need to make a directory where all wallpapers are dynamically changed and stored and then link that path to hyprlock.conf file in Style-wallpaper folder
 
-        `Note`: Use png format if possible or convert your images to png using imagemagick since hyprlock.conf {`wall.png`} can't be updated dynamically
+    - For those who are not on [Hyde](https://github.com/HyDE-Project) project need to make a directory where all wallpapers are dynamically changed and stored and then link that path to hyprlock.conf file in Style-wallpaper folder
+
 ## Usage 
 
 ### Basic Installer
